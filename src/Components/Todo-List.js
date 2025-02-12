@@ -1,19 +1,28 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoveUpIcon from '@mui/icons-material/MoveUp';
+import MoveDownIcon from '@mui/icons-material/MoveDown';
 
 const TodoList = () => {
     const [tasks, setTasks] = useState([]);
     const [item, setItem] = useState('');
+
 
     const getInputValue = (e) => {
         const input = e.target.value;
         setItem(input);
     }
 
-    const addTask = () => {
+    const addTask = (event) => {
         if(item.trim() !== ''){
             setTasks(t => [...t, {text: item, checked: false}]);
             setItem('');
         }
+
+        event.preventDefault();
     }
 
     const moveUp = (i) => {
@@ -47,26 +56,45 @@ const TodoList = () => {
     }
 
     return(
-        <div>
-            <h1>To-Do List</h1>
-            <input onChange={getInputValue} 
-                type='text' 
-                value={item} 
-                placeholder="Add a new task" />
+        <div className='todo-content'>
+            <h1>TODO LIST</h1>
+            <form id='form' onSubmit={addTask}>
+                <input onChange={getInputValue} 
+                    type='text' 
+                    value={item} 
+                    placeholder="Add a new task" />
 
-            <button onClick={addTask}>ADD</button>
+                <Fab type='submit' color='success'>
+                    <AddIcon />
+                </Fab>
+            </form>
 
             <ul>
             {tasks.map((task, index) => (
                 <li key={index + 1} className='task-item'>
                     <input type='checkbox' onChange={() => toggleCheck(index)} checked={task.checked}/>
 
-                    <span className={task.checked ? 'line-through' : ''}>{task.text}</span>
+                    <span className={task.checked ? 'line-through' : ''
+                        }
+                        onClick={() => toggleCheck(index)
+                        }>
+                        {task.text}
+                    </span>
 
-                    <button onClick={() => moveUp(index)}>👆</button>
-                    <button onClick={() => moveDown(index)}>👇</button>
-                    <button onClick={() => editTask(index)}>Edit</button>
-                    <button onClick={() => deleteTask(index)}>Delete</button>
+                    <div className='list-buttons'>
+                        <button onClick={() => moveUp(index)}>
+                            <MoveUpIcon /> 
+                        </button>
+                        <button onClick={() => moveDown(index)}>
+                            <MoveDownIcon /> 
+                        </button>
+                        <button onClick={() => editTask(index)}>
+                            <EditIcon />
+                        </button>
+                        <button onClick={() => deleteTask(index)}>
+                            <DeleteIcon />
+                        </button>
+                    </div>
                 </li>
             ))}
             </ul>
